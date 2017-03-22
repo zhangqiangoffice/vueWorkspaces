@@ -1,3 +1,4 @@
+
 <template>
   <div id="app">
     <ul>
@@ -28,15 +29,23 @@
       <li>
         <span>年龄</span>
         <br>
-        <input v-model="age" placeholder="投保年龄">
+        <input type="number" v-model="age" placeholder="投保年龄">
         <br>
-        <span>Input: {{ age }}</span>
+        <span>Input: {{ age }} 岁</span>
+      </li>
+
+      <li>
+        <span>保额(万元)</span>
+        <br>
+        <input type="number" v-model="coverage" placeholder="投保年龄">
+        <br>
+        <span>Input: {{ coverage }} 万元</span>
       </li>
       
       <li>
-        <span>费率</span>
+        <span>年缴保费</span>
         <br>
-        <span>Input: {{ rate }}</span>
+        <span>Result: {{ mainFee | capitalize }}</span>
       </li>
 
     </ul>
@@ -44,15 +53,29 @@
 </template>
 
 <script>
+import cifRates from './cif.json';
 export default {
   name: 'app',
   data () {
     return {
-      msg: 'Welcome to Your Vue.js App',
       sex: 'nan',
       year: 10,
       age: 18,
       rate: 2024,
+      coverage: 10,
+    }
+  },
+  filters: {
+    capitalize: function(val) {
+      if (isNaN(val)) {
+        return '不可投保！'
+      }
+      return val.toFixed(2) + ' 元';
+    }
+  },
+  computed: {
+    mainFee: function () {
+      return cifRates[`${this.sex}_year${this.year}_age${this.age}`] * this.coverage;
     }
   }
 }
