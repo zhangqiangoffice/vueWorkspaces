@@ -2,6 +2,7 @@
 <template>
   <div id="app">
     <ul>
+      <li>CIF主险</li>
       <li>
         <span>性别</span>
         <br>
@@ -25,7 +26,6 @@
         <br>
         <span>Picked: {{ year }}</span>
       </li>
-
       <li>
         <span>年龄</span>
         <br>
@@ -47,7 +47,11 @@
         <br>
         <span>Result: {{ mainFee | capitalize }}</span>
       </li>
+    </ul>
 
+    <ul>
+      <li>HRC或HRD</li>
+      <li></li>
     </ul>
   </div>
 </template>
@@ -95,6 +99,7 @@ ul {
   li {
     display: inline-block;
     margin: 0 10px;
+    vertical-align: top;
   }
 }
 
