@@ -117,6 +117,26 @@
       </li>
     </ul>
 
+    <ul >
+      <li>
+        <span>投保人是被保人：</span>
+        <br>
+        <input type="radio" id="self" value="self" v-model="relation">
+        <label for="self">自己</label>
+        <br>
+        <input type="radio" id="parent" value="parent" v-model="relation">
+        <label for="parent">父母</label>
+        <br>
+        <input type="radio" id="other" value="other" v-model="relation">
+        <label for="other">其他</label>
+      </li>
+      <li>
+        <span>AMRC</span>
+        <br>
+        <span>附加保费: {{ amrcFee | capitalize }}</span>
+      </li>
+    </ul>
+
   </div>
 </template>
 
