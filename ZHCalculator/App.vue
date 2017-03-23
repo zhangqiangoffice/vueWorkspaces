@@ -131,9 +131,9 @@
         <label for="other">其他</label>
       </li>
       <li>
-        <span>AMRC</span>
+        <span>保费合计</span>
         <br>
-        <span>附加保费: {{ amrcFee | capitalize }}</span>
+        <span>{{ totalFee | capitalize}}</span>
       </li>
     </ul>
 
@@ -164,6 +164,7 @@ export default {
       occupation: {"industory": "农牧业 - 农业", "code": "02060", "work": "农民", "life": 0, "accident": 2, "hospital": 2},
       addcCoverage: 2,
       amrcCoverage: 5,
+      relation: 'self',
     }
   },
   filters: {
@@ -200,6 +201,27 @@ export default {
     //amrc附加保费
     amrcFee: function () {
       return amrcRates[`occu${this.occupation.accident}`] * 1 * this.amrcCoverage
+    },
+    //主险、HRC_HRD、ADDC、AMRC保费合计
+    totalFee: function() {
+      let total = 0;
+      if (!isNaN(this.cifFee) && this.cifFee > 0) {
+        total += this.cifFee;
+      }
+      if (!isNaN(this.hrcFee) && this.hrcFee > 0 && !this.hasSocialSecurity) {
+        total += this.hrcFee;
+      }
+      if (!isNaN(this.hrdFee) && this.hrdFee > 0 && this.hasSocialSecurity) {
+        total += this.hrdFee;
+      }
+      if (!isNaN(this.addcFee) && this.addcFee > 0) {
+        total += this.addcFee;
+      }
+      if (!isNaN(this.addcFee) && this.addcFee > 0 && !isNaN(this.amrcFee) && this.amrcFee > 0 ) {
+        total += this.amrcFee;
+      }
+      return total;
+
     },
     //所有行业的名称数组
     indus: function() {
