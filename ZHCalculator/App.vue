@@ -16,6 +16,31 @@
       </li>
 
       <li>
+        <span>年龄</span>
+        <br>
+        <input type="number" class="short" v-model="age" placeholder="投保年龄">
+        <br>
+        <span>Input: {{ age }} 岁</span>
+      </li>
+
+      <li>
+        <span>职业类别</span>
+        <br>
+        <select v-model="indu" class="middle">
+          <option v-for="ind in indus" v-bind:value="ind">
+            {{ ind }}
+          </option>
+        </select>
+        <select v-model="occupation" class="middle">
+          <option v-for="job in jobs" v-bind:value="job">
+            {{ job.work }}
+          </option>
+        </select>
+        <br>
+        <span>Selected: {{ occupation.work }}</span>
+      </li>
+
+      <li>
         <span>年期</span>
         <br>
         <input type="radio" id="ten_years" value="10" v-model="year">
@@ -26,18 +51,11 @@
         <br>
         <span>Picked: {{ year }}</span>
       </li>
-      <li>
-        <span>年龄</span>
-        <br>
-        <input type="number" v-model="age" placeholder="投保年龄">
-        <br>
-        <span>Input: {{ age }} 岁</span>
-      </li>
 
       <li>
         <span>保额(万元)</span>
         <br>
-        <input type="number" v-model="coverage" placeholder="投保年龄">
+        <input type="number" class="short" v-model="coverage" placeholder="投保年龄">
         <br>
         <span>Input: {{ coverage }} 万元</span>
       </li>
@@ -45,19 +63,30 @@
       <li>
         <span>年缴保费</span>
         <br>
-        <span>Result: {{ mainFee | capitalize }}</span>
+        <span>Result: {{ cifFee | capitalize }}</span>
       </li>
     </ul>
 
     <ul>
       <li>HRC或HRD</li>
-      <li></li>
+      <li>
+        <span>是否购买社保或新农合</span>
+        <br>
+        <input type="radio" id="hasSocialSecurityTrue" value="true" v-model="hasSocialSecurity">
+        <label for="hasSocialSecurityTrue">是</label>
+        <br>
+        <input type="radio" id="hasSocialSecurityFlse" value="false" v-model="hasSocialSecurity">
+        <label for="hasSocialSecurityFlse">否</label>
+        <br>
+        <span>Picked: {{ hasSocialSecurity }}</span>
+      </li>
     </ul>
   </div>
 </template>
 
 <script>
 import cifRates from './cif.json';
+import industries from './industryCategory.json';
 export default {
   name: 'app',
   data () {
@@ -65,11 +94,14 @@ export default {
       sex: 'nan',
       year: 10,
       age: 18,
-      rate: 2024,
+      hasSocialSecurity: false,
       coverage: 10,
+      indu: '农牧业 - 农业',
+      occupation: {"industory": "农牧业 - 农业", "code": "02060", "work": "农民", "life": 0, "accident": 2, "hospital": 2}
     }
   },
   filters: {
+    //数字金额化
     capitalize: function(val) {
       if (isNaN(val)) {
         return '不可投保！'
@@ -78,8 +110,27 @@ export default {
     }
   },
   computed: {
-    mainFee: function () {
-      return cifRates[`${this.sex}_year${this.year}_age${this.age}`] * this.coverage;
+    //CIF主险保费
+    cifFee: function () {
+      return (cifRates[`${this.sex}_year${this.year}_age${this.age}`] + this.occupation.life) * this.coverage;
+    },
+    //所有行业的名称数组
+    indus: function() {
+      let industriesArr = [industries[0].industory];
+      const len = industries.length;
+      for (let i = 1; i < len; i++) {
+        if (industries[i].industory !== industries[i - 1].industory) {
+          industriesArr.push(industries[i].industory)
+        }
+      }
+      return industriesArr;
+    },
+    //选择行业后的所有工种
+    jobs: function () {
+      const that = this;
+      return industries.filter(function(ele) {
+        return ele.industory === that.indu;
+      })
     }
   }
 }
@@ -94,6 +145,15 @@ export default {
   color: #2c3e50;
   margin-top: 60px;
 }
+
+.short {
+  width: 40px;
+  }
+
+.middle {
+  width: 150px;
+}
+
 ul {
   list-style-type: none;
   li {
