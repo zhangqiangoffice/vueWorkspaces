@@ -90,6 +90,33 @@
         <span>附加保费: {{ hrdFee | capitalize }}</span>
       </li>
     </ul>
+
+    <ul>
+      <li>
+        <span>ADDC保额(万元)</span>
+        <br>
+        <input type="number" class="short" v-model="addcCoverage">
+      </li>
+      <li>
+        <span>ADDC</span>
+        <br>
+        <span>附加保费: {{ addcFee | capitalize }}</span>
+      </li>
+    </ul>
+
+    <ul v-show="addcFee > 0">
+      <li>
+        <span>AMRC保额(千元)</span>
+        <br>
+        <input type="number" class="short" v-model="amrcCoverage">
+      </li>
+      <li>
+        <span>AMRC</span>
+        <br>
+        <span>附加保费: {{ amrcFee | capitalize }}</span>
+      </li>
+    </ul>
+
   </div>
 </template>
 
@@ -97,21 +124,26 @@
 import cifRates from './cif.json';
 import hrcRates from './hrc.json';
 import hrdRates from './hrd.json';
+import addcRates from './addc.json';
+import amrcRates from './addc.json';
 import industries from './industryCategory.json';
+
 export default {
   name: 'app',
   data () {
     return {
       sex: 'nan',
       year: 10,
-      age: 18,
+      age: 20,
       hasSocialSecurity: false,
       isFirst: true,
       coverage: 10,
       indu: '农牧业 - 农业',
       chars: ['零', '一', '二', '三', '四', '五', '六'],
       plan: 1,
-      occupation: {"industory": "农牧业 - 农业", "code": "02060", "work": "农民", "life": 0, "accident": 2, "hospital": 2}
+      occupation: {"industory": "农牧业 - 农业", "code": "02060", "work": "农民", "life": 0, "accident": 2, "hospital": 2},
+      addcCoverage: 2,
+      amrcCoverage: 5,
     }
   },
   filters: {
@@ -140,6 +172,14 @@ export default {
     //hrd附加保费
     hrdFee: function () {
       return Math.round(hrdRates[`occu${this.occupation.hospital}_group${this.ageGroup}_plan${this.plan}`] * (this.isFirst ? 0.95 : 1))
+    },
+    //addc附加保费
+    addcFee: function () {
+      return addcRates[`occu${this.occupation.accident}`] * 10 * this.addcCoverage
+    },
+    //amrc附加保费
+    amrcFee: function () {
+      return amrcRates[`occu${this.occupation.accident}`] * 1 * this.amrcCoverage
     },
     //所有行业的名称数组
     indus: function() {
