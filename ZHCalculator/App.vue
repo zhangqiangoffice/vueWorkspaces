@@ -1,130 +1,9 @@
 <template>
   <div id="app">
-    <ul>
-      <li>
-        被保险人
-      </li>
-      <li>
-        <span>性别</span>
-        <br>
-        <input type="radio" id="nan" value="nan" v-model="sex">
-        <label for="nan">男</label>
-        <input type="radio" id="nv" value="nv" v-model="sex">
-        <label for="nv">女</label>
-      </li>
-
-      <li>
-        <span>年龄</span>
-        <br>
-        <input type="number" class="short" :min="0" :max="50" v-model.number="age" >
-      </li>
-
-      <li>
-        <span>职业类别</span>
-        <br>
-        <select v-model="indu" class="middle">
-          <option v-for="ind in indus" v-bind:value="ind">
-            {{ ind }}
-          </option>
-        </select>
-        <br>
-        <select v-model="occupation" class="middle">
-          <option v-for="job in jobs" v-bind:value="job">
-            {{ job.work }}
-          </option>
-        </select>
-      </li>
-    
-    </ul>
-    <ul>
-      <li>CIF 主险</li>
-      <li>
-        <span>年期</span>
-        <br>
-        <input type="radio" id="ten_years" value="10" v-model.number="year">
-        <label for="ten_years">十年</label>
-        <input type="radio" id="twenty_years" value="20" v-model.number="year">
-        <label for="twenty_years">二十年</label>
-      </li>
-      <li>
-        <span>保额(万元)</span>
-        <br>
-        <input type="number" class="short" :min="1" :max="50" v-model.number="coverage" >
-      </li>
-      
-      <li class="fee">
-        <span>CIF主险</span>
-        <br>
-        <span>年缴保费: <span :class="getColorClass(cifFee)">{{ cifFee | capitalize }}</span></span>
-      </li>
-    </ul>
-
-    <ul>
-      <li>HRC或HRD</li>
-      <li>
-        <span>已购买社保或新农合</span>
-        <br>
-        <input type="checkbox" id="hasSocialSecurity" v-model="hasSocialSecurity">
-        <label for="hasSocialSecurity">{{ hasSocialSecurity | yesOrNo }}</label>
-      </li>
-
-      <li>
-        <span>首次投保</span>
-        <br>
-        <input type="checkbox" id="isFirst" v-model="isFirst">
-        <label for="isFirst">{{ isFirst | yesOrNo }}</label>
-      </li>
-
-      <li>
-        <span>投保计划</span>
-        <br>
-        <select v-model="plan" class="middle">
-          <option v-for="num in planTop" v-bind:value="num - 1">
-            {{ chars[num - 1] }}
-          </option>
-        </select>
-      </li>
-      <li v-show="!hasSocialSecurity" class="fee">
-        <span>HRC</span>
-        <br>
-        <span>附加保费: <span :class="getColorClass(hrcFee)">{{ hrcFee | capitalize }}</span></span>
-      </li>
-      <li v-show="hasSocialSecurity" class="fee">
-        <span>HRD</span>
-        <br>
-        <span>附加保费: <span :class="getColorClass(hrdFee)">{{ hrdFee | capitalize }}</span></span>
-      </li>
-    </ul>
-
-    <ul>
-      <li>ADDC</li>
-      <li>
-        <span>ADDC保额(万元)</span>
-        <br>
-        <input type="number" class="short" :min="0" :max="99" v-model.number="addcCoverage">
-      </li>
-      <li class="fee">
-        <span>ADDC</span>
-        <br>
-        <span>附加保费: <span :class="getColorClass(addcFee)">{{ addcFee | capitalize }}</span></span>
-      </li>
-    </ul>
-
-    <ul>
-      <li>AMRC</li>
-      <li>
-        <span>AMRC保额(千元)</span>
-        <br>
-        <input type="number" class="short" :min="0" v-model.number="amrcCoverage">
-      </li>
-      <li class="fee">
-        <span>AMRC</span>
-        <br>
-        <span>附加保费: <span :class="getColorClass(amrcFee)">{{ amrcFee | capitalize }}</span></span>
-      </li>
-    </ul>
-
-    <ul >
+    <el-row>
+      <el-col :span="24">中荷保费 速算器</el-col>
+    </el-row>
+    <ul class="box">
       <li>投保人</li>
       <li>
         <span>投保人是被保人的</span>
@@ -151,8 +30,135 @@
       </li>
 
     </ul>
+    <ul class="box">
+      <li>
+        被保险人
+      </li>
+      <li>
+        <span>性别</span>
+        <br>
+        <input type="radio" id="nan" value="nan" v-model="sex">
+        <label for="nan">男</label>
+        <input type="radio" id="nv" value="nv" v-model="sex">
+        <label for="nv">女</label>
+      </li>
 
-    <ul>
+      <li>
+        <span>年龄</span>
+        <br>
+        <input type="number" class="short" :min="0" :max="50" v-model.number="age" >
+      </li>
+
+      <li>
+
+        <span>职业类别</span>
+        <br>
+        <select v-model="indu" class="middle">
+          <option v-for="ind in indus" v-bind:value="ind">
+            {{ ind }}
+          </option>
+        </select>
+        <br>
+        <select v-model="occupation" class="middle">
+          <option v-for="job in jobs" v-bind:value="job">
+            {{ job.work }}
+          </option>
+        </select>
+      </li>
+    
+    </ul>
+    <ul class="box">
+      <li>CIF 主险</li>
+      <li>
+        <span>年期</span>
+        <br>
+        <input type="radio" id="ten_years" value="10" v-model.number="year">
+        <label for="ten_years">十年</label>
+        <input type="radio" id="twenty_years" value="20" v-model.number="year">
+        <label for="twenty_years">二十年</label>
+      </li>
+      <li>
+        <span>保额(万元)</span>
+        <br>
+        <input type="number" class="short" :min="1" :max="50" v-model.number="coverage" >
+      </li>
+      
+      <li class="fee">
+        <span>CIF主险</span>
+        <br>
+        <span>保费: <span :class="getColorClass(cifFee)">{{ cifFee | capitalize }}</span></span>
+      </li>
+    </ul>
+
+    <ul class="box">
+      <li>HRC或HRD</li>
+      <li>
+        <span>已购买社保或新农合</span>
+        <br>
+        <input type="checkbox" id="hasSocialSecurity" v-model="hasSocialSecurity">
+        <label for="hasSocialSecurity">{{ hasSocialSecurity | yesOrNo }}</label>
+      </li>
+
+      <li>
+        <span>首次投保</span>
+        <br>
+        <input type="checkbox" id="isFirst" v-model="isFirst">
+        <label for="isFirst">{{ isFirst | yesOrNo }}</label>
+      </li>
+
+      <li>
+        <span>投保计划</span>
+        <br>
+        <el-select v-model="plan" clearable placeholder="请选择">
+          <el-option
+            v-for="item in planTop"
+            :label="chars[item - 1]"
+            :value="item - 1">
+          </el-option>
+        </el-select>
+      </li>
+      <li v-show="!hasSocialSecurity" class="fee">
+        <span>HRC</span>
+        <br>
+        <span>保费: <span :class="getColorClass(hrcFee)">{{ hrcFee | capitalize }}</span></span>
+      </li>
+      <li v-show="hasSocialSecurity" class="fee">
+        <span>HRD</span>
+        <br>
+        <span>保费: <span :class="getColorClass(hrdFee)">{{ hrdFee | capitalize }}</span></span>
+      </li>
+    </ul>
+
+    <ul class="box">
+      <li>ADDC</li>
+      <li>
+        <span>ADDC保额(万元)</span>
+        <br>
+        <input type="number" class="short" :min="0" :max="99" v-model.number="addcCoverage">
+      </li>
+      <li class="fee">
+        <span>ADDC</span>
+        <br>
+        <span>保费: <span :class="getColorClass(addcFee)">{{ addcFee | capitalize }}</span></span>
+      </li>
+    </ul>
+
+    <ul class="box">
+      <li>AMRC</li>
+      <li>
+        <span>AMRC保额(千元)</span>
+        <br>
+        <input type="number" class="short" :min="0" v-model.number="amrcCoverage">
+      </li>
+      <li class="fee">
+        <span>AMRC</span>
+        <br>
+        <span>保费: <span :class="getColorClass(amrcFee)">{{ amrcFee | capitalize }}</span></span>
+      </li>
+    </ul>
+
+
+    <ul class="box">
       <li>W系列</li>
       <li>
         <span>主险及附加保费合计</span>
@@ -162,22 +168,22 @@
       <li class="fee">
         <span>WA</span>
         <br>
-        <span>附加保费: <span :class="getColorClass(waFee)">{{ waFee | capitalize }}</span></span>
+        <span>保费: <span :class="getColorClass(waFee)">{{ waFee | capitalize }}</span></span>
       </li>
       <li class="fee">
         <span>WPA</span>
         <br>
-        <span>附加保费: <span :class="getColorClass(wpaFee)">{{ wpaFee | capitalize }}</span></span>
+        <span>保费: <span :class="getColorClass(wpaFee)">{{ wpaFee | capitalize }}</span></span>
       </li>
       <li class="fee">
         <span>WPB</span>
         <br>
-        <span>附加保费: <span :class="getColorClass(wpbFee)">{{ wpbFee | capitalize }}</span></span>
+        <span>保费: <span :class="getColorClass(wpbFee)">{{ wpbFee | capitalize }}</span></span>
       </li>
       <li class="fee">
         <span>WP</span>
         <br>
-        <span>附加保费: <span :class="getColorClass(wpFee)">{{ wpFee | capitalize }}</span></span>
+        <span>保费: <span :class="getColorClass(wpFee)">{{ wpFee | capitalize }}</span></span>
       </li>
     </ul>
 
@@ -257,7 +263,7 @@ export default {
         return '未买主险'
       }
 
-      return hrcRates[`occu${this.occupation.hospital}_group${this.ageGroup}_plan${this.plan}`] * (this.isFirst ? 0.95 : 1)
+      return Math.round(hrcRates[`occu${this.occupation.hospital}_group${this.ageGroup}_plan${this.plan}`] * (this.isFirst ? 0.95 : 1))
     },
     //hrd附加保费
     hrdFee: function () {
@@ -271,7 +277,7 @@ export default {
         return '未买主险'
       }
 
-      return hrdRates[`occu${this.occupation.hospital}_group${this.ageGroup}_plan${this.plan}`] * (this.isFirst ? 0.95 : 1)
+      return Math.round(hrdRates[`occu${this.occupation.hospital}_group${this.ageGroup}_plan${this.plan}`] * (this.isFirst ? 0.95 : 1))
     },
     //addc附加保费
     addcFee: function () {
@@ -470,8 +476,9 @@ export default {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
+  width:1008px;
   color: #2c3e50;
-  margin-top: 60px;
+  margin: 10px auto;
 }
 
 .short {
@@ -482,7 +489,7 @@ export default {
   width: 150px;
 }
 
-ul {
+.box {
   list-style-type: none;
   border: 1px solid #ccc;
   padding: 10px 0;
