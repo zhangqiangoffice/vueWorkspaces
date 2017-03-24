@@ -139,7 +139,7 @@
       <li>
         <span>投保人年龄</span>
         <br>
-        <input type="number" class="short" :min="0" v-model.number="applicantAge" >
+        <input type="number" class="short" :min="18" v-model.number="applicantAge" >
       </li>
       <li>
         <span>投保人性别</span>
@@ -247,7 +247,11 @@ export default {
     },
     //hrc附加保费
     hrcFee: function () {
-      
+      //可选不投保
+      if (this.plan === 0 ) {
+        return '未投保'
+      }
+
       //主险必须投保成功
       if (this.noFee(this.cifFee) ) {
         return '未买主险'
@@ -257,7 +261,11 @@ export default {
     },
     //hrd附加保费
     hrdFee: function () {
-      
+      //可选不投保
+      if (this.plan === 0 ) {
+        return '未投保'
+      }
+
       //主险必须投保成功
       if (this.noFee(this.cifFee) ) {
         return '未买主险'
@@ -268,6 +276,16 @@ export default {
     //addc附加保费
     addcFee: function () {
       
+      //被保人成年，则ADDC保额+主险保额<= 100万
+      if (this.age > 18 && this.coverage + this.addcCoverage > 100 ) {
+        return '保额超过100万'
+      }
+
+      //被保人未成年，则ADDC保额+主险保额<= 50万
+      if (this.age <= 18 && this.coverage + this.addcCoverage > 50 ) {
+        return '保额超过50万'
+      }
+
       //主险必须投保成功
       if (this.noFee(this.cifFee) ) {
         return '未买主险'
@@ -288,6 +306,11 @@ export default {
         return '未买ADDC'
       }
 
+      //AMRC的保额不能超过ADDC保额的20%
+      if (this.amrcCoverage > this.addcCoverage * 2 ) {
+        return '过ADDC20%'
+      }
+
       return amrcRates[`occu${this.occupation.accident}`] * 1 * this.amrcCoverage
     },
     //wa附加保费
@@ -296,6 +319,16 @@ export default {
       //主险必须投保成功
       if (this.noFee(this.cifFee) ) {
         return '未买主险'
+      }
+
+      //被保险人须在18-55周岁
+      if (this.age < 18 || this.age > 55 ) {
+        return '被保须18-55岁'
+      }
+
+      //缴费期满被保险人不得超过65周岁
+      if (this.age + this.year > 65) {
+        return '被保期满已过65岁'
       }
 
       return waRates[`${this.sex}_year${this.year}_age${this.age}`] * 1 * (this.totalFee / 1000)
@@ -308,6 +341,16 @@ export default {
         return '未买主险'
       }
 
+      //投保人是被保人父母
+      if (this.relation !== 'parent' ) {
+        return '须父母投保'
+      }
+
+      //被保人不得超过十八周岁
+      if (this.age > 18 ) {
+        return '被保已过18岁'
+      }
+
       return wpaRates[`age${this.applicantAge}_year${this.year}`] * 1 * (this.totalFee / 1000)
     },
     //wpb附加保费
@@ -316,6 +359,16 @@ export default {
       //主险必须投保成功
       if (this.noFee(this.cifFee) ) {
         return '未买主险'
+      }
+
+      //主险必须投保成功
+      if (this.relation === 'self' ) {
+        return '须不为同一人'
+      }
+
+      //投保人不得超过五十五周岁
+      if (this.applicantAge > 55 ) {
+        return '投保已过55岁'
       }
 
       return wpbRates[`${this.applicantSex}_year${this.year}_age${this.applicantAge}`] * 1 * (this.totalFee / 1000)
@@ -330,7 +383,7 @@ export default {
 
       //投被保人为同一人时才可投保wp
       if (this.relation !== 'self') {
-        return '需为同一人'
+        return '须为同一人'
       }
       return wpRates[`age${this.applicantAge}_year${this.year}`] * 1 * (this.totalFee / 1000)
     },
@@ -384,7 +437,20 @@ export default {
     },
     //最高可以购买的投保计划等级
     planTop: function() {
-      return this.ageGroup < 4 ? 4 : 7;
+      let max = this.ageGroup < 4 ? 4 : 7;
+      let coverage = this.coverage;
+      if (coverage < 2) {
+        max = 1;
+      } else if (coverage < 4) {
+        max = 2;
+      } else if (coverage < 10) {
+        max = 3;
+      } else if (coverage < 16) {
+        max = 4;
+      } else if (coverage < 20) {
+        max = 5;
+      }
+      return max
     }
   },
   methods: {
@@ -435,7 +501,7 @@ ul {
     &.fee {
       color: sienna;
       float: right;
-      width: 165px;
+      width: 180px;
       text-align: left;
 
       .ok {
