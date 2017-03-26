@@ -2,8 +2,8 @@
   <div id="app">
     <el-row>
       <el-col :span="24">
-        <!-- <img class="logo" src="./img/flash.png"> -->
-        <h1 class="theme">闪电速算器</h1>
+        
+        <h1 class="theme">闪电<img class="logo" src="./img/flash.png">速算器</h1>
         <span>中荷保费</span>
       </el-col>
     </el-row>
@@ -386,8 +386,8 @@ export default {
       }
 
       //缴费期满被保险人不得超过65周岁
-      if (this.age + this.year > 65) {
-        return '被保期满已过65岁'
+      if (this.age - 0 + this.year > 65) {
+        return '期满被保人超过65岁'
       }
 
       return waRates[`${this.sex}_year${this.year}_age${this.age}`] * 1 * (this.totalFee / 1000)
@@ -601,7 +601,7 @@ export default {
   text-align: center;
   width:1008px;
   color: #2c3e50;
-  margin: 10px auto;
+  margin: 20px auto;
 }
 .logo {
   display: inline-block;
@@ -609,7 +609,7 @@ export default {
 .theme {
   display: inline-block;
   margin-top: 0;
-  margin-bottom: 10px;
+  margin-bottom: 30px;
   color: #d18f07;
 }
 .choice {

@@ -1,12 +1,13 @@
 var path = require('path')
 var webpack = require('webpack')
 
+var projectName = 'ZHCalculator'
+
 module.exports = {
-  // entry: './src/main.js',
-  entry: './ZHCalculator/main.js',
+  entry: './' + projectName + '/main.js',
   output: {
-    path: path.resolve(__dirname, './dist'),
-    publicPath: '/dist/',
+    path: path.resolve(__dirname, '../' + projectName + '/dist'),
+    publicPath: './dist/',
     filename: 'build.js'
   },
   module: {
@@ -46,7 +47,7 @@ module.exports = {
         }
       },
       {
-        test: /\.(png|jpg|jpeg|gif|eot|ttf|woff|woff2|svg|svgz)(\?.+)?$/,
+        test: /\.(jpg|jpeg|gif|eot|ttf|woff|woff2|svg|svgz)(\?.+)?$/,
         exclude: /favicon\.png$/,
         use: [{
           loader: 'url-loader',
