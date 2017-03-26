@@ -1,192 +1,249 @@
 <template>
   <div id="app">
     <el-row>
-      <el-col :span="24">中荷保费 速算器</el-col>
+      <el-col :span="24">
+        <!-- <img class="logo" src="./img/flash.png"> -->
+        <h1 class="theme">闪电速算器</h1>
+        <span>中荷保费</span>
+      </el-col>
     </el-row>
-    <ul class="box">
-      <li>投保人</li>
-      <li>
-        <span>投保人是被保人的</span>
-        <br>
-        <input type="radio" id="self" value="self" v-model="relation">
-        <label for="self">自己</label>
-        <input type="radio" id="parent" value="parent" v-model="relation">
-        <label for="parent">父母</label>
-        <input type="radio" id="other" value="other" v-model="relation">
-        <label for="other">其他</label>
-      </li>
-      <li>
-        <span>投保人年龄</span>
-        <br>
-        <input type="number" class="short" :min="18" v-model.number="applicantAge" >
-      </li>
-      <li>
-        <span>投保人性别</span>
-        <br>
-        <input type="radio" id="applicantNan" value="nan" v-model="applicantSex">
-        <label for="applicantNan">男</label>
-        <input type="radio" id="applicantNv" value="nv" v-model="applicantSex">
-        <label for="applicantNv">女</label>
-      </li>
-
-    </ul>
-    <ul class="box">
-      <li>
-        被保险人
-      </li>
-      <li>
-        <span>性别</span>
-        <br>
-        <input type="radio" id="nan" value="nan" v-model="sex">
-        <label for="nan">男</label>
-        <input type="radio" id="nv" value="nv" v-model="sex">
-        <label for="nv">女</label>
-      </li>
-
-      <li>
-        <span>年龄</span>
-        <br>
-        <input type="number" class="short" :min="0" :max="50" v-model.number="age" >
-      </li>
-
-      <li>
-
-        <span>职业类别</span>
-        <br>
-        <select v-model="indu" class="middle">
-          <option v-for="ind in indus" v-bind:value="ind">
-            {{ ind }}
-          </option>
-        </select>
-        <br>
-        <select v-model="occupation" class="middle">
-          <option v-for="job in jobs" v-bind:value="job">
-            {{ job.work }}
-          </option>
-        </select>
-      </li>
     
-    </ul>
-    <ul class="box">
-      <li>CIF 主险</li>
-      <li>
-        <span>年期</span>
-        <br>
-        <input type="radio" id="ten_years" value="10" v-model.number="year">
-        <label for="ten_years">十年</label>
-        <input type="radio" id="twenty_years" value="20" v-model.number="year">
-        <label for="twenty_years">二十年</label>
-      </li>
-      <li>
-        <span>保额(万元)</span>
-        <br>
-        <input type="number" class="short" :min="1" :max="50" v-model.number="coverage" >
-      </li>
-      
-      <li class="fee">
-        <span>CIF主险</span>
-        <br>
-        <span>保费: <span :class="getColorClass(cifFee)">{{ cifFee | capitalize }}</span></span>
-      </li>
-    </ul>
+    <el-row class="box">
+      <el-col :span="3"><div class="title">被保险人</div></el-col>
+      <el-col :span="21">
+        <el-row>
+          <el-col :span="4">
+            <div class="choice">
+              <span>性别</span><br>
+              <el-radio-group v-model="sex">
+                <el-radio label="nan">男</el-radio>
+                <el-radio label="nv">女</el-radio>
+              </el-radio-group>
+            </div>
+          </el-col>
+          <el-col :span="4">
+            <div class="choice">
+              <span>年龄</span><br>
+              <el-input class="short" :maxlength="6" size="small" v-model="age" @change="transAge" ></el-input> 周岁
+            </div>
+          </el-col>
+          <el-col :span="8" :offset="1">
+            <div class="choice">
+              <span>职业等级</span><br>
+              <el-cascader
+                expand-trigger="hover"
+                :options="indus"
+                filterable
+                size="small"
+                v-model="job"
+                :show-all-levels="false">
+              </el-cascader>
+            </div>
+          </el-col>
+        </el-row>
+      </el-col>
+    </el-row>
 
-    <ul class="box">
-      <li>HRC或HRD</li>
-      <li>
-        <span>已购买社保或新农合</span>
-        <br>
-        <input type="checkbox" id="hasSocialSecurity" v-model="hasSocialSecurity">
-        <label for="hasSocialSecurity">{{ hasSocialSecurity | yesOrNo }}</label>
-      </li>
+    <el-row class="box">
+      <el-col :span="16" class="border_r border_b">
+        <el-row>
+          <el-col :span="6" :offset="6">
+            <div class="choice">
+              <span>缴费年期</span><br>
+              <el-radio-group v-model="year">
+                <el-radio :label="10">十年</el-radio>
+                <el-radio :label="20">二十年</el-radio>
+              </el-radio-group>
+            </div>
+          </el-col>
+          <el-col :span="6">
+            <div class="choice">
+              <span>CIF保额</span>
+              <br>
+              <el-input size="small" class="short" type="number" v-model.number="coverage" :min="1" :max="50" ></el-input> 万元
+            </div>
+          </el-col>
+          
+          <el-col :span="6">
+            <div class="fee">
+              <span>CIF 保费</span>
+              <br>
+              <span :class="getColorClass(cifFee)">{{ cifFee | capitalize }}</span>
+            </div>
+          </el-col>
+          
+        </el-row>
+      </el-col>
+      <el-col :span="8" class="border_b">
+        <el-row>
+          <el-col :span="12">
+            <div class="choice">
+              <span>ADDC保额</span>
+              <br>
+              <el-input size="small" class="short" type="number" v-model.number="addcCoverage" :min="0" :max="99" ></el-input> 万元
+            </div>
+          </el-col>
+          <el-col :span="12">
+            <div class="fee">
+              <span>ADDC 保费</span>
+              <br>
+              <span :class="getColorClass(addcFee)">{{ addcFee | capitalize }}</span>
+            </div>
+          </el-col>
+        </el-row>
+      </el-col>
+      <el-col :span="16" class="border_r">
+        <el-row>
+          <el-col :span="6">
+            <div class="choice">
+              <span>社保或新农合</span>
+              <br>
+              <el-radio-group v-model="hasSocialSecurity">
+                <el-radio :label="true">有</el-radio>
+                <el-radio :label="false">无</el-radio>
+              </el-radio-group>
+            </div>
+          </el-col>
 
-      <li>
-        <span>首次投保</span>
-        <br>
-        <input type="checkbox" id="isFirst" v-model="isFirst">
-        <label for="isFirst">{{ isFirst | yesOrNo }}</label>
-      </li>
+          <el-col :span="6">
+            <div class="choice">
+              <span>首次投保</span>
+              <br>
+              <el-radio-group v-model="isFirst">
+                <el-radio :label="true">是</el-radio>
+                <el-radio :label="false">否</el-radio>
+              </el-radio-group>
+            </div>
+          </el-col>
 
-      <li>
-        <span>投保计划</span>
-        <br>
-        <el-select v-model="plan" clearable placeholder="请选择">
-          <el-option
-            v-for="item in planTop"
-            :label="chars[item - 1]"
-            :value="item - 1">
-          </el-option>
-        </el-select>
-      </li>
-      <li v-show="!hasSocialSecurity" class="fee">
-        <span>HRC</span>
-        <br>
-        <span>保费: <span :class="getColorClass(hrcFee)">{{ hrcFee | capitalize }}</span></span>
-      </li>
-      <li v-show="hasSocialSecurity" class="fee">
-        <span>HRD</span>
-        <br>
-        <span>保费: <span :class="getColorClass(hrdFee)">{{ hrdFee | capitalize }}</span></span>
-      </li>
-    </ul>
+          <el-col :span="6">
+            <div class="choice">
+              <span>投保计划</span>
+              <br>
+              <el-select v-model="plan" class="middle" size="small" placeholder="投保计划">
+                <el-option
+                  v-for="item in planTop"
+                  :label="chars[item - 1]"
+                  :value="item - 1">
+                </el-option>
+              </el-select>
+            </div>
+          </el-col>
+          <el-col :span="6" v-show="!hasSocialSecurity">
+            <div class="fee">
+              <span>HRC 保费</span>
+              <br>
+              <span :class="getColorClass(hrcFee)">{{ hrcFee | capitalize }}</span>
+            </div>
+          </el-col>
+          <el-col :span="6" v-show="hasSocialSecurity">
+            <div class="fee">
+              <span>HRD 保费</span>
+              <br>
+              <span :class="getColorClass(hrdFee)">{{ hrdFee | capitalize }}</span>
+            </div>
+          </el-col>
+        </el-row>
+        
+      </el-col>
+      <el-col :span="8">
+        <el-row>
+          <el-col :span="12">
+            <div class="choice">
+              <span>AMRC保额</span>
+              <br>
 
-    <ul class="box">
-      <li>ADDC</li>
-      <li>
-        <span>ADDC保额(万元)</span>
-        <br>
-        <input type="number" class="short" :min="0" :max="99" v-model.number="addcCoverage">
-      </li>
-      <li class="fee">
-        <span>ADDC</span>
-        <br>
-        <span>保费: <span :class="getColorClass(addcFee)">{{ addcFee | capitalize }}</span></span>
-      </li>
-    </ul>
+              <el-input type="number" size="small" class="short" :min="0" v-model.number="amrcCoverage"></el-input> 千元
+            </div>
+          </el-col>
+          <el-col :span="12">
+            <div class="fee">
+              <span>AMRC 保费</span>
+              <br>
+              <span :class="getColorClass(amrcFee)">{{ amrcFee | capitalize }}</span>
+            </div>
+          </el-col>
+        </el-row>
+        
+      </el-col>
+    </el-row>
 
-    <ul class="box">
-      <li>AMRC</li>
-      <li>
-        <span>AMRC保额(千元)</span>
-        <br>
-        <input type="number" class="short" :min="0" v-model.number="amrcCoverage">
-      </li>
-      <li class="fee">
-        <span>AMRC</span>
-        <br>
-        <span>保费: <span :class="getColorClass(amrcFee)">{{ amrcFee | capitalize }}</span></span>
-      </li>
-    </ul>
+    <el-row class="box">
+      <el-col :span="3"><div class="title">投保人</div></el-col>
+      <el-col :span="21">
+        <el-row>
+          <el-col :span="4">
+            <div class="choice">
+              <span>性别</span><br>
+              <el-radio-group v-model="applicantSex">
+                <el-radio label="nan">男</el-radio>
+                <el-radio label="nv">女</el-radio>
+              </el-radio-group>
+            </div>
+          </el-col>
+          <el-col :span="4">
+            <div class="choice">
+              <span>年龄</span><br>
+              <el-input  class="short" :maxlength="6" size="small" v-model="applicantAge" @change="transApplicantAge"></el-input> 周岁
+            </div>
+          </el-col>
+          <el-col :span="7">
+            <div class="choice">
+              <span>是被保人的</span><br>
+              <el-radio-group v-model="relation">
+                <el-radio label="self">自己</el-radio>
+                <el-radio label="parent">父母</el-radio>
+                <el-radio label="other">其他</el-radio>
+              </el-radio-group>
+            </div>
+          </el-col>
+        </el-row>
+      </el-col>
+    </el-row>
 
-
-    <ul class="box">
-      <li>W系列</li>
-      <li>
-        <span>主险及附加保费合计</span>
-        <br>
-        <span>{{ totalFee | capitalize}}</span>
-      </li>
-      <li class="fee">
-        <span>WA</span>
-        <br>
-        <span>保费: <span :class="getColorClass(waFee)">{{ waFee | capitalize }}</span></span>
-      </li>
-      <li class="fee">
-        <span>WPA</span>
-        <br>
-        <span>保费: <span :class="getColorClass(wpaFee)">{{ wpaFee | capitalize }}</span></span>
-      </li>
-      <li class="fee">
-        <span>WPB</span>
-        <br>
-        <span>保费: <span :class="getColorClass(wpbFee)">{{ wpbFee | capitalize }}</span></span>
-      </li>
-      <li class="fee">
-        <span>WP</span>
-        <br>
-        <span>保费: <span :class="getColorClass(wpFee)">{{ wpFee | capitalize }}</span></span>
-      </li>
-    </ul>
-
+    <el-row class="box">
+      <el-col :span="3"><div class="title">W系列</div></el-col>
+      <el-col :span="21">
+        <el-row>
+          <el-col :span="8">
+            <div class="choice">
+              <span>主险及附加 保费合计</span>
+              <br>
+              <span>{{ totalFee | capitalize}}</span>
+            </div>
+          </el-col>
+          <el-col :span="4">
+            <div class="fee">
+              <span>WA 保费</span>
+              <br>
+              <span :class="getColorClass(waFee)">{{ waFee | capitalize }}</span>
+            </div>
+          </el-col>
+          <el-col :span="4">
+            <div class="fee">
+              <span>WPA 保费</span>
+              <br>
+              <span :class="getColorClass(wpaFee)">{{ wpaFee | capitalize }}</span>
+            </div>
+          </el-col>
+          <el-col :span="4">
+            <div class="fee">
+              <span>WPB 保费</span>
+              <br>
+              <span :class="getColorClass(wpbFee)">{{ wpbFee | capitalize }}</span>
+            </div>
+          </el-col>
+          <el-col :span="4">
+            <div class="fee">
+              <span>WP 保费</span>
+              <br>
+              <span :class="getColorClass(wpFee)">{{ wpFee | capitalize }}</span>
+            </div>
+          </el-col>
+          
+        </el-row>
+      </el-col>
+    </el-row>
   </div>
 </template>
 
@@ -217,11 +274,11 @@ export default {
       indu: '农牧业 - 农业',
       chars: ['不投保', '计划一', '计划二', '计划三', '计划四', '计划五', '计划六'],
       plan: 1,
-      occupation: {"industory": "农牧业 - 农业", "code": "02060", "work": "农民", "life": 0, "accident": 2, "hospital": 2},
+      job: ["农牧业", "农业", "02060"],
       addcCoverage: 2,
       amrcCoverage: 5,
       relation: 'self',
-      hasWA: true,
+      hasWA: true
     }
   },
   filters: {
@@ -241,10 +298,6 @@ export default {
       //金额
       return val.toFixed(2) + ' 元';
     },
-    //判断：“是”或者“否”
-    yesOrNo: function(val) {
-      return val ? '是' : '否'; 
-    },
   },
   computed: {
     //CIF主险保费
@@ -260,7 +313,7 @@ export default {
 
       //主险必须投保成功
       if (this.noFee(this.cifFee) ) {
-        return '未买主险'
+        return '未投保主险'
       }
 
       return Math.round(hrcRates[`occu${this.occupation.hospital}_group${this.ageGroup}_plan${this.plan}`] * (this.isFirst ? 0.95 : 1))
@@ -274,7 +327,7 @@ export default {
 
       //主险必须投保成功
       if (this.noFee(this.cifFee) ) {
-        return '未买主险'
+        return '未投保主险'
       }
 
       return Math.round(hrdRates[`occu${this.occupation.hospital}_group${this.ageGroup}_plan${this.plan}`] * (this.isFirst ? 0.95 : 1))
@@ -294,7 +347,7 @@ export default {
 
       //主险必须投保成功
       if (this.noFee(this.cifFee) ) {
-        return '未买主险'
+        return '未投保主险'
       }
 
       return addcRates[`occu${this.occupation.accident}`] * 10 * this.addcCoverage
@@ -304,17 +357,17 @@ export default {
       
       //主险必须投保成功
       if (this.noFee(this.cifFee) ) {
-        return '未买主险'
+        return '未投保主险'
       }
 
       //ADDC必须投保成功
       if (this.noFee(this.addcFee) ) {
-        return '未买ADDC'
+        return '未投保ADDC'
       }
 
       //AMRC的保额不能超过ADDC保额的20%
       if (this.amrcCoverage > this.addcCoverage * 2 ) {
-        return '过ADDC20%'
+        return '超过ADDC的20%'
       }
 
       return amrcRates[`occu${this.occupation.accident}`] * 1 * this.amrcCoverage
@@ -324,7 +377,7 @@ export default {
       
       //主险必须投保成功
       if (this.noFee(this.cifFee) ) {
-        return '未买主险'
+        return '未投保主险'
       }
 
       //被保险人须在18-55周岁
@@ -344,7 +397,7 @@ export default {
       
       //主险必须投保成功
       if (this.noFee(this.cifFee) ) {
-        return '未买主险'
+        return '未投保主险'
       }
 
       //投保人是被保人父母
@@ -364,7 +417,7 @@ export default {
       
       //主险必须投保成功
       if (this.noFee(this.cifFee) ) {
-        return '未买主险'
+        return '未投保主险'
       }
 
       //主险必须投保成功
@@ -384,7 +437,7 @@ export default {
       
       //主险必须投保成功
       if (this.noFee(this.cifFee) ) {
-        return '未买主险'
+        return '未投保主险'
       }
 
       //投被保人为同一人时才可投保wp
@@ -417,11 +470,40 @@ export default {
     },
     //所有行业的名称数组
     indus: function() {
-      let industriesArr = [industries[0].industory];
+      let industriesArr = [{
+        value: industries[0].industory.split(' - ')[0], 
+        label: industries[0].industory.split(' - ')[0], 
+        children: [{
+          value: industries[0].industory.split(' - ')[1],
+          label: industries[0].industory.split(' - ')[1],
+          children: [this.makeJob(industries[0])]
+        }]
+      }];
       const len = industries.length;
       for (let i = 1; i < len; i++) {
-        if (industries[i].industory !== industries[i - 1].industory) {
-          industriesArr.push(industries[i].industory)
+        let job = industries[i]
+        let first = job.industory.split(' - ')[0];
+        let second = job.industory.split(' - ')[1];
+
+        if (first !== industries[i - 1].industory.split(' - ')[0]) {
+          industriesArr.push({
+            value: first, 
+            label: first, 
+            children: [{
+              value: second,
+              label: second, 
+              children:[this.makeJob(job)]
+            }]
+          })
+        } else if (second !== industries[i - 1].industory.split(' - ')[1]) {
+          industriesArr[industriesArr.length - 1].children.push({
+            label: second, 
+            value: second,
+            children: [this.makeJob(job)]
+          })
+        } else {
+          let index = industriesArr[industriesArr.length - 1].children.length - 1;
+          industriesArr[industriesArr.length - 1].children[index].children.push(this.makeJob(job))
         }
       }
       return industriesArr;
@@ -457,6 +539,12 @@ export default {
         max = 5;
       }
       return max
+    },
+    //选中的职业等级
+    occupation: function() {
+      return industries.find((ele) => {
+          return ele.code === this.job[2];
+      })
     }
   },
   methods: {
@@ -465,7 +553,42 @@ export default {
     },
     noFee: function (fee) {
       return ! (fee > 0)
+    },
+    makeJob: function(obj) {
+      return {
+            value: obj.code,
+            label: `${obj.work}(${obj.code},寿${obj.life},意${obj.accident},医${obj.hospital})`
+          }
+    },
+    //被保人年龄换算
+    transAge: function(str) {
+      if (str.length === 6) {
+        this.age = this.dateToAge(str)
+      }
+    },
+    //投保人年龄换算
+    transApplicantAge: function(str) {
+      if (str.length === 6) {
+        this.applicantAge = this.dateToAge(str)
+      }
+    },
+    //日期转周岁
+    dateToAge: function(str) {
+      const today = new Date();
+      const thisYear = today.getFullYear() % 2000;
+      const year = str.substr(0, 2);
+      const month = str.substr(2, 2) - 1;
+      const day = str.substr(4, 2);
+      const birthDate = new Date((year - 0 < thisYear ? '20' : '19') + year , month, day)
+      const m = today.getMonth() - birthDate.getMonth();
+
+      let age = today.getFullYear() - birthDate.getFullYear();
+      if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+        age--;
+      }
+      return age;
     }
+
   }
 }
 </script>
@@ -480,46 +603,66 @@ export default {
   color: #2c3e50;
   margin: 10px auto;
 }
-
-.short {
-  width: 40px;
-  }
-
-.middle {
-  width: 150px;
+.logo {
+  display: inline-block;
+}
+.theme {
+  display: inline-block;
+  margin-top: 0;
+  margin-bottom: 10px;
+  color: #d18f07;
+}
+.choice {
+  margin-top: 8px;
+}
+.border_r {
+  border-right: 1px solid #ccc;
+}
+.border_l {
+  border-left: 1px solid #ccc;
 }
 
+.border_b {
+  border-bottom: 1px solid #ccc;
+}
+
+.short {
+  width: 60px;
+}
+
+.middle {
+  width: 100px;
+}
+.el-cascader--small {
+  width: 100%
+}
 .box {
   list-style-type: none;
   border: 1px solid #ccc;
-  padding: 10px 0;
   margin-bottom: 10px;
-  li {
-    display: inline-block;
-    margin: 0 10px;
-    vertical-align: top;
+}
+.title {
+  width: 100%;
+  height: 70px;
+  background: #fff;
+  color: orange;
+  font-size: 24px;
+  line-height: 70px;
+  border-right: 1px solid #ccc;
+}
+.fee {
+  color: sienna;
+  background: #D3DCE6;
+  padding: 8px 0;
+  margin: 5px 8px;
+  border-radius: 4px;
 
-    &:first-child{
-      font-size: 20px;
-      float: left;
-      color: orange;
-    }
+  .ok {
+    color: green
+  }
 
-    &.fee {
-      color: sienna;
-      float: right;
-      width: 180px;
-      text-align: left;
-
-      .ok {
-        color: green
-      }
-
-      .no {
-        color: red;
-      }
-    }
+  .no {
+    color: red;
   }
 }
-
 </style>
