@@ -1,0 +1,26 @@
+{
+  "scoresList" : [{
+    "name": "小明",
+    "chiness": 80,
+    "math": 90,
+    "english": 70,
+    "total": 240
+  },{
+    "name": "小红",
+    "chiness": 90,
+    "math": 60,
+    "english": 90,
+    "total": 240
+    },{
+    "name": "小亮",
+    "chiness": 60,
+    "math": 100,
+    "english": 70,
+    "total": 230
+    }],
+  "courseList" : [{"zh": "语文", "en": "chiness" }, 
+    {"zh": "数学", "en": "math"}, 
+    {"zh": "语文", "en": "chiness"},
+    {"zh": "总分", "en": "total"}
+  ]
+}

@@ -1,7 +1,8 @@
 var path = require('path')
 var webpack = require('webpack')
 
-var projectName = 'ZHCalculator'
+// var projectName = 'ZHCalculator'
+var projectName = 'ife2017/yaoyao/task7'
 
 module.exports = {
   entry: './' + projectName + '/main.js',
