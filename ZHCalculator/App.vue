@@ -20,12 +20,13 @@
               </el-radio-group>
             </div>
           </el-col>
-          <el-col :span="4">
+          <Age :age="age" @changeAge="changeInsuredAge"></Age>
+          <!-- <el-col :span="4">
             <div class="choice">
               <span>年龄</span><br>
               <el-input class="middle" :maxlength="6" size="small" type="number" v-model.number="age" @change="transAge" ></el-input> 周岁
             </div>
-          </el-col>
+          </el-col> -->
           <el-col :span="8" :offset="1">
             <div class="choice">
               <span>职业等级</span><br>
@@ -135,7 +136,6 @@
             <div class="choice">
               <span>AMRC保额</span>
               <br>
-
               <el-input type="number" size="small" class="short" :min="0" v-model.number="amrcCoverage"></el-input> 千元
             </div>
           </el-col>
@@ -160,12 +160,7 @@
               </el-radio-group>
             </div>
           </el-col>
-          <el-col :span="4">
-            <div class="choice">
-              <span>年龄</span><br>
-              <el-input  class="middle" type="number" :maxlength="6" size="small" v-model.number="applicantAge" @change="transApplicantAge"></el-input> 周岁
-            </div>
-          </el-col>
+          <Age :age="applicantAge" @changeAge="changeApplicantAge"></Age>
           <el-col :span="7">
             <div class="choice">
               <span>是被保人的</span><br>
@@ -214,12 +209,14 @@ import industries from './json/industryCategory.json';
 
 import MainTitle from './components/MainTitle.vue'
 import Fee from './components/Fee.vue'
+import Age from './components/Age.vue'
 
 export default {
   name: 'app',
   components: {
     MainTitle,
-    Fee
+    Fee,
+    Age
   },
   data () {
     return {
@@ -502,33 +499,11 @@ export default {
             label: `${obj.work}(${obj.code},寿${obj.life},意${obj.accident},医${obj.hospital})`
           }
     },
-    //被保人年龄换算
-    transAge: function(str) {
-      if (str.length === 6) {
-        this.age = this.dateToAge(str)
-      }
+    changeInsuredAge: function (age) {
+      this.age = age;
     },
-    //投保人年龄换算
-    transApplicantAge: function(str) {
-      if (str.length === 6) {
-        this.applicantAge = this.dateToAge(str)
-      }
-    },
-    //日期转周岁
-    dateToAge: function(str) {
-      const today = new Date();
-      const thisYear = today.getFullYear() % 2000;
-      const year = str.substr(0, 2);
-      const month = str.substr(2, 2) - 1;
-      const day = str.substr(4, 2);
-      const birthDate = new Date((year - 0 < thisYear ? '20' : '19') + year , month, day)
-      const m = today.getMonth() - birthDate.getMonth();
-
-      let age = today.getFullYear() - birthDate.getFullYear();
-      if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
-        age--;
-      }
-      return age;
+    changeApplicantAge: function (age) {
+      this.applicantAge = age;
     }
 
   }
