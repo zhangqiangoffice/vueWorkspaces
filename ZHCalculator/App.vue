@@ -2,14 +2,13 @@
   <div id="app">
     <el-row>
       <el-col :span="24">
-        
         <h1 class="theme">闪电<img class="logo" src="./img/flash.png">速算器</h1>
         <span>中荷保费</span>
       </el-col>
     </el-row>
     
     <el-row class="box">
-      <el-col :span="3"><div class="title">被保险人</div></el-col>
+      <MainTitle title="被保险人"></MainTitle>
       <el-col :span="21">
         <el-row>
           <el-col :span="4">
@@ -24,7 +23,7 @@
           <el-col :span="4">
             <div class="choice">
               <span>年龄</span><br>
-              <el-input class="short" :maxlength="6" size="small" v-model="age" @change="transAge" ></el-input> 周岁
+              <el-input class="middle" :maxlength="6" size="small" type="number" v-model.number="age" @change="transAge" ></el-input> 周岁
             </div>
           </el-col>
           <el-col :span="8" :offset="1">
@@ -65,11 +64,7 @@
           </el-col>
           
           <el-col :span="6">
-            <div class="fee">
-              <span>CIF 保费</span>
-              <br>
-              <span :class="getColorClass(cifFee)">{{ cifFee | capitalize }}</span>
-            </div>
+            <Fee item="CIF" :fee="cifFee"></Fee>
           </el-col>
           
         </el-row>
@@ -84,11 +79,7 @@
             </div>
           </el-col>
           <el-col :span="12">
-            <div class="fee">
-              <span>ADDC 保费</span>
-              <br>
-              <span :class="getColorClass(addcFee)">{{ addcFee | capitalize }}</span>
-            </div>
+            <Fee item="ADDC" :fee="addcFee"></Fee>
           </el-col>
         </el-row>
       </el-col>
@@ -130,18 +121,10 @@
             </div>
           </el-col>
           <el-col :span="6" v-show="!hasSocialSecurity">
-            <div class="fee">
-              <span>HRC 保费</span>
-              <br>
-              <span :class="getColorClass(hrcFee)">{{ hrcFee | capitalize }}</span>
-            </div>
+            <Fee item="HRC" :fee="hrcFee"></Fee>
           </el-col>
           <el-col :span="6" v-show="hasSocialSecurity">
-            <div class="fee">
-              <span>HRD 保费</span>
-              <br>
-              <span :class="getColorClass(hrdFee)">{{ hrdFee | capitalize }}</span>
-            </div>
+            <Fee item="HRD" :fee="hrdFee"></Fee>
           </el-col>
         </el-row>
         
@@ -157,11 +140,7 @@
             </div>
           </el-col>
           <el-col :span="12">
-            <div class="fee">
-              <span>AMRC 保费</span>
-              <br>
-              <span :class="getColorClass(amrcFee)">{{ amrcFee | capitalize }}</span>
-            </div>
+            <Fee item="AMRC" :fee="amrcFee"></Fee>
           </el-col>
         </el-row>
         
@@ -169,7 +148,7 @@
     </el-row>
 
     <el-row class="box">
-      <el-col :span="3"><div class="title">投保人</div></el-col>
+      <MainTitle title="投保人"></MainTitle>
       <el-col :span="21">
         <el-row>
           <el-col :span="4">
@@ -184,7 +163,7 @@
           <el-col :span="4">
             <div class="choice">
               <span>年龄</span><br>
-              <el-input  class="short" :maxlength="6" size="small" v-model="applicantAge" @change="transApplicantAge"></el-input> 周岁
+              <el-input  class="middle" type="number" :maxlength="6" size="small" v-model.number="applicantAge" @change="transApplicantAge"></el-input> 周岁
             </div>
           </el-col>
           <el-col :span="7">
@@ -202,45 +181,19 @@
     </el-row>
 
     <el-row class="box">
-      <el-col :span="3"><div class="title">W系列</div></el-col>
+      <MainTitle title="W系列"></MainTitle>
       <el-col :span="21">
         <el-row>
           <el-col :span="8">
             <div class="choice">
               <span>主险及附加 保费合计</span>
               <br>
-              <span>{{ totalFee | capitalize}}</span>
+              <span>{{ totalFee.toFixed(2) }}元</span>
             </div>
           </el-col>
-          <el-col :span="4">
-            <div class="fee">
-              <span>WA 保费</span>
-              <br>
-              <span :class="getColorClass(waFee)">{{ waFee | capitalize }}</span>
-            </div>
+          <el-col :span="4" v-for="item in wList">
+            <Fee :item="item.name" :fee="item.fee"></Fee>
           </el-col>
-          <el-col :span="4">
-            <div class="fee">
-              <span>WPA 保费</span>
-              <br>
-              <span :class="getColorClass(wpaFee)">{{ wpaFee | capitalize }}</span>
-            </div>
-          </el-col>
-          <el-col :span="4">
-            <div class="fee">
-              <span>WPB 保费</span>
-              <br>
-              <span :class="getColorClass(wpbFee)">{{ wpbFee | capitalize }}</span>
-            </div>
-          </el-col>
-          <el-col :span="4">
-            <div class="fee">
-              <span>WP 保费</span>
-              <br>
-              <span :class="getColorClass(wpFee)">{{ wpFee | capitalize }}</span>
-            </div>
-          </el-col>
-          
         </el-row>
       </el-col>
     </el-row>
@@ -259,8 +212,15 @@ import wpbRates from './json/wpb.json';
 import wpRates from './json/wp.json';
 import industries from './json/industryCategory.json';
 
+import MainTitle from './components/MainTitle.vue'
+import Fee from './components/Fee.vue'
+
 export default {
   name: 'app',
+  components: {
+    MainTitle,
+    Fee
+  },
   data () {
     return {
       sex: 'nan',
@@ -271,33 +231,14 @@ export default {
       coverage: 10,
       applicantAge: 45,
       applicantSex: 'nan',
-      indu: '农牧业 - 农业',
       chars: ['不投保', '计划一', '计划二', '计划三', '计划四', '计划五', '计划六'],
       plan: 1,
       job: ["农牧业", "农业", "02060"],
       addcCoverage: 2,
       amrcCoverage: 5,
       relation: 'self',
-      hasWA: true
+      hasWA: true,
     }
-  },
-  filters: {
-    //数字金额化
-    capitalize: function(val) {
-      
-      //字符串提示
-      if ( (typeof val === 'string') && val.constructor === String) {
-        return val;
-      }
-
-      //NaN或负数
-      if (isNaN(val) || val < 0) {
-        return '不可投保！'
-      }
-
-      //金额
-      return val.toFixed(2) + ' 元';
-    },
   },
   computed: {
     //CIF主险保费
@@ -337,12 +278,12 @@ export default {
       
       //被保人成年，则ADDC保额+主险保额<= 100万
       if (this.age > 18 && this.coverage + this.addcCoverage > 100 ) {
-        return '保额超过100万'
+        return '总保额超过100万'
       }
 
       //被保人未成年，则ADDC保额+主险保额<= 50万
       if (this.age <= 18 && this.coverage + this.addcCoverage > 50 ) {
-        return '保额超过50万'
+        return '总保额超过50万'
       }
 
       //主险必须投保成功
@@ -382,7 +323,7 @@ export default {
 
       //被保险人须在18-55周岁
       if (this.age < 18 || this.age > 55 ) {
-        return '被保须18-55岁'
+        return '被保人须18-55岁'
       }
 
       //缴费期满被保险人不得超过65周岁
@@ -407,7 +348,7 @@ export default {
 
       //被保人不得超过十八周岁
       if (this.age > 18 ) {
-        return '被保已过18岁'
+        return '被保人已过18岁'
       }
 
       return wpaRates[`age${this.applicantAge}_year${this.year}`] * 1 * (this.totalFee / 1000)
@@ -427,7 +368,7 @@ export default {
 
       //投保人不得超过五十五周岁
       if (this.applicantAge > 55 ) {
-        return '投保已过55岁'
+        return '投保人已过55岁'
       }
 
       return wpbRates[`${this.applicantSex}_year${this.year}_age${this.applicantAge}`] * 1 * (this.totalFee / 1000)
@@ -467,6 +408,10 @@ export default {
       }
       return total;
 
+    },
+    //W系列的列表
+    wList: function() {
+      return [{name: 'WA', fee: this.waFee}, {name: 'WPA', fee: this.wpaFee}, {name: 'WPB', fee: this.wpbFee}, {name: 'WP', fee: this.wpFee}]
     },
     //所有行业的名称数组
     indus: function() {
@@ -548,9 +493,6 @@ export default {
     }
   },
   methods: {
-    getColorClass: function(val) {
-      return val > 0 ? 'ok' : 'no'
-    },
     noFee: function (fee) {
       return ! (fee > 0)
     },
@@ -618,9 +560,6 @@ export default {
 .border_r {
   border-right: 1px solid #ccc;
 }
-.border_l {
-  border-left: 1px solid #ccc;
-}
 
 .border_b {
   border-bottom: 1px solid #ccc;
@@ -640,29 +579,5 @@ export default {
   list-style-type: none;
   border: 1px solid #ccc;
   margin-bottom: 10px;
-}
-.title {
-  width: 100%;
-  height: 70px;
-  background: #fff;
-  color: orange;
-  font-size: 24px;
-  line-height: 70px;
-  border-right: 1px solid #ccc;
-}
-.fee {
-  color: sienna;
-  background: #D3DCE6;
-  padding: 8px 0;
-  margin: 5px 8px;
-  border-radius: 4px;
-
-  .ok {
-    color: green
-  }
-
-  .no {
-    color: red;
-  }
 }
 </style>

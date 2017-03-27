@@ -6,8 +6,8 @@ var projectName = 'ZHCalculator'
 module.exports = {
   entry: './' + projectName + '/main.js',
   output: {
-    path: path.resolve(__dirname, '../' + projectName + '/dist'),
-    publicPath: './dist/',
+    path: path.resolve(__dirname, './dist'),
+    publicPath: '/dist/',
     filename: 'build.js'
   },
   module: {
